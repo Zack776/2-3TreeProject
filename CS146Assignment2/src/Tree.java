@@ -87,7 +87,7 @@ public class Tree<T extends Comparable<T>> {
 			T min = Collections.min(keyList);
 			
 			
-			if(node.parent == null) {
+			if(parent == null) {
 				keyList.remove(max);
 				keyList.remove(min);
 				Node<T> rightChild = new Node<T>(max);
