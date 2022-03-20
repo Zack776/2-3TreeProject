@@ -26,7 +26,8 @@ public class Tree<T extends Comparable<T>> {
 		public Node(T data){
 			keyList = new ArrayList<T>();
 			keyList.add(data);
-			children = new ArrayList<Node<T>>();	
+			children = new ArrayList<Node<T>>();
+			// when and where to assign a node's parent?
 		}
 		
 		public Node<T> search( T key) {
@@ -34,9 +35,22 @@ public class Tree<T extends Comparable<T>> {
 		}
 	
 		private Node<T> recursiveSearch(T key){
+			System.out.println("HERE");
+			
+			if(isLeaf() == true) {
+				for(T keys: keyList) {
+					if(key.equals(keys)) {
+						return this;
+					}
+					else 
+						return null;
+					
+				}
+			}
 			int index = 0;
 			// base case:
 			if(this == null || key.equals(keyList.get(index))) {
+				System.out.println(keyList.get(index));
 				return this;
 			}
 			else {
@@ -48,13 +62,14 @@ public class Tree<T extends Comparable<T>> {
 		}
 		
 		private Node<T> recursiveInsert(T key){
+			System.out.println("ENTERING RecurseInsert");
 			// empty root
 			int index = 0;
 			if(isLeaf() == true) {
 				keyList.add(key);
 				Collections.sort(keyList);
 				if(keyList.size() > 2) {
-					split(this);
+					split();
 					if(keyList.get(0).compareTo(keyList.get(1)) > 0) {
 						Collections.sort(keyList);
 					}
@@ -81,13 +96,14 @@ public class Tree<T extends Comparable<T>> {
 			return children.isEmpty();
 		}
 		
-		public void split(Node<T> node) {
+		public void split() {
 			// where we take the y value s.t. x<y<z and move it up with its parent
 			T max = Collections.max(keyList);
 			T min = Collections.min(keyList);
 			
 			
 			if(parent == null) {
+				System.out.println("at a node with no parent");
 				keyList.remove(max);
 				keyList.remove(min);
 				Node<T> rightChild = new Node<T>(max);
@@ -107,7 +123,7 @@ public class Tree<T extends Comparable<T>> {
 				parent.children.add(n2);
 			
 			if(parent.keyList.size() > 2){
-				split(parent);
+				parent.split();
 			}
 		}
 			
@@ -139,6 +155,7 @@ public class Tree<T extends Comparable<T>> {
 				return false;
 			}
 			else {
+				System.out.println("here");
 				root.recursiveInsert(key);
 				return true;
 			}
@@ -151,15 +168,25 @@ public class Tree<T extends Comparable<T>> {
 		tree.insert(4);
 		return tree;
 	}
+	public void printTree() {
+		for(T keys: root.keyList) {
+			System.out.println(keys);
+		}
+	}
+	
 	public static void main(String[] args) {
 		//Tree<Integer> tree = testTree();
 		Tree<Integer> tree = new Tree<Integer>();
 		tree.insert(2);
 		
 		//tree.insert(2);
-		tree.insert(4);
-		//tree.root.isLeaf();
-		//System.out.println(tree.root.isLeaf());
+		tree.insert(8);
+		tree.insert(1);
+		System.out.println(tree.root.isLeaf());
+		
+		System.out.println("***********");
+		
+		tree.printTree();
 	
 	}
 }
