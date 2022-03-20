@@ -24,6 +24,7 @@ public class Tree<T extends Comparable<T>> {
 		private ArrayList<T> keyList; // AL of keys in a node
 		
 		public Node(T data){
+			keyList = new ArrayList<T>();
 			keyList.add(data);
 			children = new ArrayList<Node<T>>();	
 		}
@@ -35,7 +36,7 @@ public class Tree<T extends Comparable<T>> {
 		private Node<T> recursiveSearch(T key){
 			int index = 0;
 			// base case:
-			if(this == null || (key.equals(keyList.get(index)))) {
+			if(this == null || key.equals(keyList.get(index))) {
 				return this;
 			}
 			else {
@@ -47,10 +48,11 @@ public class Tree<T extends Comparable<T>> {
 		}
 		
 		private Node<T> recursiveInsert(T key){
-			
+			// empty root
 			int index = 0;
-			if(isLeaf(this) == true) {
+			if(isLeaf() == true) {
 				keyList.add(key);
+				Collections.sort(keyList);
 				if(keyList.size() > 2) {
 					split(this);
 					if(keyList.get(0).compareTo(keyList.get(1)) > 0) {
@@ -66,19 +68,17 @@ public class Tree<T extends Comparable<T>> {
 				return children.get(index).recursiveInsert(key);
 			}
 		}
-		/*
-		public boolean swap() {
-			// swap nodes if you need to keep integrity in keylist, children list
-			return null;
-		}
-		*/
 		
 		public boolean contains(T key) {
-			return search(key) != null;
+			if(search(key) == null) {
+				return false;
+			}
+			else
+				return true;
 		}
 		
-		public boolean isLeaf(Node<T> node) {
-			return node.children.isEmpty();
+		public boolean isLeaf() {
+			return children.isEmpty();
 		}
 		
 		public void split(Node<T> node) {
@@ -110,18 +110,6 @@ public class Tree<T extends Comparable<T>> {
 				split(parent);
 			}
 		}
-		public T getMedian(T key1, T key2, T key3) {
-			
-			ArrayList<T> Tvals = new ArrayList<T>();
-			Tvals.add(key1);
-			Tvals.add(key2);
-			Tvals.add(key3);
-			Collections.sort(Tvals);
-			return Tvals.get(1);
-		
-			// helper method for split that returns the the key with the middle value.
-			// assign the returned key as parent of the other two keys?
-		}
 			
 	} // end of node class
 	
@@ -139,13 +127,22 @@ public class Tree<T extends Comparable<T>> {
 	}
 	
 	public boolean insert(T key) {
-		if(root.contains(key) == true) {
-			return false;
-		}
-		else {
-			root.recursiveInsert(key);
+		
+		if(getRoot() == null) {
+			Node<T> n1 = new Node<T>(key);
+			root = n1;
 			return true;
 		}
+		else {
+			if(root.contains(key) == true) {
+				System.out.println("Already within tree");
+				return false;
+			}
+			else {
+				root.recursiveInsert(key);
+				return true;
+			}
+		}	
 	}
 	
 	public static Tree<Integer> testTree(){
@@ -155,7 +152,14 @@ public class Tree<T extends Comparable<T>> {
 		return tree;
 	}
 	public static void main(String[] args) {
-		Tree<Integer> tree = testTree();
-		tree.getRoot();
+		//Tree<Integer> tree = testTree();
+		Tree<Integer> tree = new Tree<Integer>();
+		tree.insert(2);
+		
+		//tree.insert(2);
+		tree.insert(4);
+		//tree.root.isLeaf();
+		//System.out.println(tree.root.isLeaf());
+	
 	}
 }
